@@ -334,8 +334,8 @@ function renderMCQ(){
       ${q.opts.map((o,i)=>`<button class="opt" id="mcqo${i}" onclick="pickMCQ(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join('')}
     </div>
     <div id="mcq-fb" style="display:none"></div>
-    <div id="mcq-nav" class="btn-row" style="display:none">
-      ${mcqIdx<QS.length-1?'<button class="btn-main btn-primary" onclick="nextMCQ()">Próxima →</button>':'<button class="btn-main btn-primary" onclick="nextMCQ()">Ver resultado →</button>'}
+    <div id="mcq-nav" class="btn-row">
+      ${mcqIdx<QS.length-1?'<button class="btn-main btn-primary" id="mcq-next" onclick="nextMCQ()" style="display:none">Próxima →</button>':'<button class="btn-main btn-primary" id="mcq-next" onclick="nextMCQ()" style="display:none">Ver resultado →</button>'}
       <button class="btn-main" onclick="goHome()">Menu</button>
     </div>`;
   mcqAnswered=false;
@@ -354,7 +354,7 @@ function pickMCQ(i){
   fb.style.display='block';
   fb.className='fb '+(ok?'fb-ok':'fb-err');
   fb.innerHTML='<div class="fb-title">'+(ok?'Correto!':'Incorreto')+'</div>'+(ok?q.ok:q.err);
-  document.getElementById('mcq-nav').style.display='flex';
+  document.getElementById('mcq-next').style.display='block';
   if(mcqLives===0){setTimeout(()=>{showResult('mcq');},1800);}
 }
 
