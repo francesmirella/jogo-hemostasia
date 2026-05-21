@@ -1,0 +1,541 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+h2.sr{position:absolute;left:-9999px}
+:root{
+  --font-sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --font-serif:'Playfair Display',Georgia,serif;
+  --bg-0:#0B0E13;
+  --bg-1:#111622;
+  --bg-2:#161D2B;
+  --bg-3:#1B2334;
+  --ink-0:#F2F4F7;
+  --ink-1:#CBD3E1;
+  --ink-2:#9AA7BF;
+  --accent:#7C6FE8;
+  --accent-2:#3ED1C3;
+  --accent-3:#F6C76F;
+  --border-1:#263049;
+  --border-2:#1E2738;
+  --shadow:0 12px 40px rgba(0,0,0,.35);
+  --color-text-primary:var(--ink-0);
+  --color-text-secondary:var(--ink-2);
+  --color-background-primary:var(--bg-2);
+  --color-background-secondary:var(--bg-3);
+  --color-border-primary:#2F3A52;
+  --color-border-secondary:var(--border-1);
+  --color-border-tertiary:var(--border-2);
+}
+body{
+  font-family:var(--font-sans);
+  color:var(--ink-0);
+  background:
+    radial-gradient(900px 500px at 10% -10%, rgba(124,111,232,.25), transparent 60%),
+    radial-gradient(700px 420px at 90% -20%, rgba(62,209,195,.18), transparent 60%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1));
+}
+
+.game-wrap{padding:24px 18px 40px;max-width:980px;margin:0 auto}
+
+.screen{display:none}.screen.on{display:block}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border-2)}
+.top-bar-title{font-size:14px;font-weight:600;color:var(--ink-0);letter-spacing:.02em}
+.top-bar-right{display:flex;align-items:center;gap:12px}
+.score-badge{font-size:12px;font-weight:500;color:var(--ink-2)}
+.score-val{color:var(--ink-0)}
+.lives{font-size:16px;letter-spacing:2px}
+
+.card{
+  background:linear-gradient(180deg, rgba(22,29,43,.9), rgba(17,22,34,.9));
+  border:1px solid var(--border-1);
+  border-radius:16px;
+  padding:18px 20px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(4px);
+}
+.card-label{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+
+.hero-title{font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--ink-0)}
+.hero-sub{font-size:13px;color:var(--ink-1);line-height:1.55}
+
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:600;margin:1px 3px}
+.p-pu{background:#2A245F;color:#D9D5FF}.p-te{background:#0E3A31;color:#C7F3E4}.p-am{background:#3F2A08;color:#FFDCA1}
+.p-gr{background:#2C2C2A;color:#E2E0D8}.p-bl{background:#0D2B4B;color:#C7DCFF}.p-co{background:#4A1B0C;color:#FFD0BE}
+.p-rd{background:#4B1414;color:#FFD0D0}
+
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn-main{padding:10px 18px;border-radius:10px;border:1px solid var(--border-1);background:var(--bg-2);color:var(--ink-0);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-main:hover{background:var(--bg-3);border-color:#2F3A52}
+.btn-primary{background:linear-gradient(180deg, #857AF0, #6E62E2);border-color:#6E62E2;color:#F5F3FF;box-shadow:0 8px 20px rgba(124,111,232,.3)}
+.btn-primary:hover{background:linear-gradient(180deg, #9389F4, #7C6FE8)}
+@media(prefers-color-scheme:dark){.btn-primary{background:#26215C;border-color:#534AB7;color:#CECBF6}.btn-primary:hover{background:#3C3489}}
+
+.mini-mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px}
+.mode-card{background:linear-gradient(180deg, rgba(27,35,52,.9), rgba(17,22,34,.9));border:1px solid var(--border-1);border-radius:14px;padding:16px;cursor:pointer;transition:all .2s;box-shadow:0 10px 26px rgba(0,0,0,.25)}
+.mode-card:hover{border-color:#2F3A52;transform:translateY(-2px)}
+.mode-card.selected{border-color:#6E62E2;background:linear-gradient(180deg, rgba(124,111,232,.2), rgba(22,29,43,.9))}
+@media(prefers-color-scheme:dark){.mode-card.selected{border-color:#534AB7;background:#26215C}}
+.mode-icon{font-size:22px;margin-bottom:6px;color:var(--ink-2)}
+.mode-title{font-size:13px;font-weight:600;color:var(--ink-0);margin-bottom:2px}
+.mode-desc{font-size:11px;color:var(--ink-1);line-height:1.45}
+
+.q-text{font-size:15px;color:var(--ink-0);line-height:1.6;margin-bottom:16px;font-weight:400}
+.q-meta{font-size:11px;color:var(--ink-2);margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.q-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:500}
+
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{width:100%;text-align:left;padding:11px 14px;border-radius:10px;border:1px solid var(--border-2);background:var(--bg-2);color:var(--ink-0);font-size:13px;cursor:pointer;transition:all .12s;line-height:1.45}
+.opt:hover:not([disabled]){background:var(--bg-3);border-color:#2F3A52}
+.opt.ok{background:#0E3A31;border-color:#2ED6A5;color:#DDF8F0}
+.opt.err{background:#4B1414;border-color:#FF6B6A;color:#FFE0E0}
+.opt.reveal{background:#2A245F;border-color:#9B92F6;color:#E6E1FF}
+
+.fb{padding:12px 14px;border-left:3px solid;border-radius:0 10px 10px 0;margin-top:12px;font-size:13px;line-height:1.55;color:var(--ink-0);background:rgba(255,255,255,.03)}
+.fb-ok{border-color:#2ED6A5;background:#0E3A31;color:#DDF8F0}
+.fb-err{border-color:#FF6B6A;background:#4B1414;color:#FFE0E0}
+.fb-title{font-weight:500;margin-bottom:3px}
+
+.progress-wrap{margin-bottom:14px}
+.progress-bar{height:4px;background:var(--border-2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg, var(--accent), #9C92F5);border-radius:3px;transition:width .35s}
+
+.sort-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.sort-col{background:linear-gradient(180deg, rgba(27,35,52,.9), rgba(17,22,34,.9));border:1px solid var(--border-1);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+.sort-zone-title{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.sort-drop-zone{min-height:50px;border:1px dashed #2B3550;border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:linear-gradient(180deg, rgba(27,35,52,.8), rgba(17,22,34,.8));transition:border-color .15s}
+.sort-drop-zone.vertical{flex-direction:column;align-items:stretch;gap:8px}
+.sort-drop-zone.over{border-color:var(--accent)}
+.sort-item{padding:7px 12px;border-radius:8px;border:1px solid var(--border-2);background:var(--bg-2);color:var(--ink-0);font-size:13px;cursor:grab;user-select:none;transition:all .1s;display:flex;align-items:center;gap:10px}
+.sort-ordered{counter-reset:sortOrder}
+.sort-ordered .sort-item::before{counter-increment:sortOrder;content:counter(sortOrder);width:22px;height:22px;border-radius:7px;background:rgba(124,111,232,.2);border:1px solid rgba(124,111,232,.5);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#DAD6FF;flex-shrink:0}
+.sort-item:active{cursor:grabbing}
+.sort-item.dragging{opacity:.4}
+
+@media(max-width:780px){
+  .sort-layout{grid-template-columns:1fr}
+}
+
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-grid > div{background:linear-gradient(180deg, rgba(27,35,52,.9), rgba(17,22,34,.9));border:1px solid var(--border-1);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+.match-col-title{font-size:11px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.match-item{padding:8px 12px;border-radius:9px;border:1px solid var(--border-2);background:var(--bg-2);font-size:12px;color:var(--ink-0);cursor:pointer;margin-bottom:6px;transition:all .12s;line-height:1.4}
+.match-item:hover{background:var(--bg-3);border-color:#2F3A52}
+.match-item.selected{background:#EEEDFE;border-color:#7F77DD;color:#3C3489}
+.match-item.matched-ok{background:#0E3A31;border-color:#2ED6A5;color:#DDF8F0;cursor:default}
+.match-item.matched-err{background:#4B1414;border-color:#FF6B6A;color:#FFE0E0}
+
+.result-big{text-align:center;padding:24px}
+.result-score-num{font-size:44px;font-weight:600;color:var(--ink-0);margin-bottom:4px}
+.result-score-sub{font-size:14px;color:var(--ink-2);margin-bottom:18px}
+.result-msg{font-size:13px;color:var(--ink-0);line-height:1.6;background:var(--bg-2);border-radius:10px;padding:12px 14px;text-align:left;margin-bottom:16px}
+.medal{font-size:36px;margin-bottom:8px;display:block}
+
+.stage-timeline{display:flex;flex-direction:column;gap:0}
+.stage-step{display:flex;gap:12px;margin-bottom:0}
+.stage-line-col{display:flex;flex-direction:column;align-items:center;width:28px;flex-shrink:0}
+.stage-dot{width:12px;height:12px;border-radius:50%;background:var(--border-2);flex-shrink:0;margin-top:16px;z-index:1}
+.stage-dot.done{background:#1D9E75}
+.stage-dot.current{background:var(--accent)}
+.stage-connector{width:2px;flex:1;background:var(--border-2)}
+.stage-connector.done{background:#1D9E75}
+.stage-content{padding:12px 0 20px;flex:1}
+.stage-name{font-size:12px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.stage-title{font-size:14px;font-weight:600;color:var(--ink-0)}
+
+.coag-patient{background:linear-gradient(180deg, rgba(27,35,52,.9), rgba(17,22,34,.9));border:1px solid var(--border-1);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.coag-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.coag-name{font-size:14px;font-weight:600;color:var(--ink-0)}
+.coag-labs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.lab-box{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600}
+.lab-up{background:#4B1414;color:#FFE0E0}.lab-down{background:#0E3A31;color:#DDF8F0}.lab-norm{background:#2C2C2A;color:#E2E0D8}
+
+.streak-badge{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#3F2A08;color:#FFDCA1;display:inline-block}
+</style>
+
+<div class="game-wrap">
+<h2 class="sr">Jogo interativo — cascata de coagulação e coagulopatias</h2>
+
+<div id="screen-home" class="screen on">
+  <div class="card" style="margin-bottom:16px">
+    <div class="hero-title" style="margin-bottom:6px">Cascata em jogo</div>
+    <div class="hero-sub">Do endotélio lesado à fibrinólise — e tudo que pode dar errado no meio. Escolha um modo:</div>
+  </div>
+  <div class="mini-mode-grid">
+    <div class="mode-card" onclick="startMode('mcq')">
+      <div class="mode-icon"><i class="ti ti-brain" aria-hidden="true"></i></div>
+      <div class="mode-title">Quiz rápido</div>
+      <div class="mode-desc">12 questões de múltipla escolha — mecanismo + clínica</div>
+    </div>
+    <div class="mode-card" onclick="startMode('sort')">
+      <div class="mode-icon"><i class="ti ti-sort-ascending" aria-hidden="true"></i></div>
+      <div class="mode-title">Ordene a cascata</div>
+      <div class="mode-desc">Arraste os eventos na ordem correta</div>
+    </div>
+    <div class="mode-card" onclick="startMode('match')">
+      <div class="mode-icon"><i class="ti ti-arrows-join" aria-hidden="true"></i></div>
+      <div class="mode-title">Associação</div>
+      <div class="mode-desc">Ligue coagulopatias ao fator deficiente</div>
+    </div>
+    <div class="mode-card" onclick="startMode('detective')">
+      <div class="mode-icon"><i class="ti ti-stethoscope" aria-hidden="true"></i></div>
+      <div class="mode-title">Detetive clínico</div>
+      <div class="mode-desc">Leia o caso e exames, identifique a coagulopatia</div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-mcq" class="screen">
+  <div class="top-bar">
+    <div class="top-bar-title">Quiz rápido</div>
+    <div class="top-bar-right">
+      <span class="score-badge">Acertos: <span class="score-val" id="mcq-score">0</span></span>
+      <span class="lives" id="mcq-lives">&#9679;&#9679;&#9679;</span>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-bottom:6px">
+      <span id="mcq-qnum">Questão 1 de 12</span>
+      <span id="mcq-streak"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="mcq-prog" style="width:0%"></div></div>
+  </div>
+  <div class="card" id="mcq-panel"></div>
+</div>
+
+<div id="screen-sort" class="screen">
+  <div class="top-bar">
+    <div class="top-bar-title">Ordene a cascata</div>
+    <div class="top-bar-right"><span class="score-badge" id="sort-tries"></span></div>
+  </div>
+  <div id="sort-panel"></div>
+</div>
+
+<div id="screen-match" class="screen">
+  <div class="top-bar">
+    <div class="top-bar-title">Associação</div>
+    <div class="top-bar-right"><span class="score-badge" id="match-score-disp">0 / 7</span></div>
+  </div>
+  <div id="match-panel"></div>
+</div>
+
+<div id="screen-detective" class="screen">
+  <div class="top-bar">
+    <div class="top-bar-title">Detetive clínico</div>
+    <div class="top-bar-right">
+      <span class="score-badge">Caso <span class="score-val" id="det-num">1</span> de <span id="det-total">5</span></span>
+    </div>
+  </div>
+  <div id="detective-panel"></div>
+</div>
+
+<div id="screen-result" class="screen">
+  <div class="card">
+    <div class="result-big">
+      <span class="medal" id="result-medal"></span>
+      <div class="result-score-num" id="result-num"></div>
+      <div class="result-score-sub" id="result-sub"></div>
+      <div class="result-msg" id="result-msg"></div>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn-main btn-primary" onclick="goHome()">Jogar novamente</button>
+        <button class="btn-main" onclick="sendPrompt('Quero revisar os pontos que errei na cascata de coagulação')">Revisar pontos fracos ↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const QS=[
+  {cat:'vaso',tag:'Vasoespasmo',tagClass:'p-pu',q:'Qual proteína secretada pelo endotélio lesado causa vasoconstrição ligando-se ao receptor do músculo liso?',opts:['Fibronectina','Endotelina','Trombomodulina','Prostaciclina'],ans:1,ok:'A Endotelina é secretada pelo endotélio lesado e se liga a receptores no músculo liso, causando contração e reduzindo o fluxo no local da lesão.',err:'Endotelina. A prostaciclina (PGI2) faz o oposto — relaxa o músculo liso. Trombomodulina é um receptor da trombina no endotélio íntegro.'},
+  {cat:'tampao',tag:'Tampão plaquetário',tagClass:'p-te',q:'A adesão da plaqueta ao colágeno subendotelial exposto é mediada pelo Fator de von Willebrand (FvW) — qual receptor na plaqueta reconhece o FvW?',opts:['GpIIb/IIIa','GpIb','GpVI','Integrina αIIbβ3'],ans:1,ok:'A GpIb (Glicoproteína Ib) é o receptor plaquetário que se liga ao FvW ancorado no colágeno. Esse é o primeiro contato — a adesão plaquetária.',err:'GpIb. O GpIIb/IIIa (= integrina αIIbβ3) atua depois, na agregação — ligando o fibrinogênio entre plaquetas. São etapas diferentes: GpIb = adesão; GpIIb/IIIa = agregação.'},
+  {cat:'tampao',tag:'Tampão plaquetário',tagClass:'p-te',q:'O Tromboxano A2 (TXA2) é produzido pelas plaquetas ativadas. Como ele é sintetizado — e qual a diferença do ADP?',opts:['TXA2 é liberado de grânulos densos, ADP é sintetizado via COX-1','TXA2 é sintetizado via COX-1 a partir do ácido araquidônico; ADP é liberado de grânulos densos','Ambos são sintetizados via COX-1','Ambos são liberados de grânulos densos'],ans:1,ok:'Correto. TXA2 é produzido na hora, via COX-1 (por isso AAS inibe a agregação plaquetária). ADP vem dos grânulos densos (delta). Conhecer essa diferença é importante pois AAS não afeta o ADP.',err:'TXA2 é sintetizado via COX-1 — não fica estocado em grânulo. O ADP sim, vem dos grânulos densos. Daí o AAS (inibidor da COX-1) bloquear o TXA2 mas não o ADP.'},
+  {cat:'cascata',tag:'Via intrínseca',tagClass:'p-gr',q:'Na via intrínseca, qual complexo é formado pelo Fator IXa junto ao seu cofator, Ca²⁺ e Fosfatidilserina — e o que ele faz?',opts:['Complexo Protrombinase → converte Protrombina em Trombina','Complexo Tenase intrínseco → ativa o Fator X','Complexo FT/VIIa → ativa o Fator X e IX','Complexo Tenase extrínseco → ativa o Fator IX'],ans:1,ok:'Complexo Tenase intrínseco: IXa + VIIIa + Ca²⁺ + FP3 → ativa Fator X. O nome "Tenase" vem de "ten" (dez) — ele gera o Fator Xa.',err:'Complexo Tenase intrínseco (IXa + VIIIa + Ca²⁺ + FP3) → ativa Fator X. "Tenase" vem de "ten". Não confunda com Protrombinase, que usa Xa + Va para converter Protrombina em Trombina.'},
+  {cat:'cascata',tag:'Via extrínseca',tagClass:'p-gr',q:'O Fator Tecidual (FT) é exposto pela lesão. Com qual fator plasmático ele forma complexo para iniciar a via extrínseca?',opts:['Fator XII','Fator VII','Fator XI','Fator IX'],ans:1,ok:'FT + Fator VII → complexo FT/VIIa. Esse complexo ativa diretamente o Fator X (via comum) e também pode ativar o Fator IX — criando uma ponte com a via intrínseca.',err:'Fator VII. O complexo é FT/VIIa. O Fator XII inicia a via intrínseca — mecanismo completamente diferente. Lembre: via extrínseca = Tecidual + sete (VII).'},
+  {cat:'cascata',tag:'Via comum',tagClass:'p-am',q:'O Complexo Protrombinase converte Protrombina em Trombina. Quais componentes formam esse complexo?',opts:['IXa + VIIIa + Ca²⁺ + FP3','Xa + Va + Ca²⁺ + Fosfatidilserina','XIIa + XIa + Ca²⁺','VIIa + FT + Ca²⁺'],ans:1,ok:'Xa + Va + Ca²⁺ + Fosfatidilserina (FP3) = Complexo Protrombinase → cliva Protrombina (II) em Trombina (IIa). Macete: "Pro = 10+5" e "Tenase = 9+8".',err:'Complexo Protrombinase = Xa + Va + Ca²⁺ + FP3. O IXa + VIIIa formam o Tenase intrínseco (ativa X). Macete: "Pro = 10+5"; "Tenase = 9+8".'},
+  {cat:'cascata',tag:'Fibrina',tagClass:'p-am',q:'A Trombina cliva o Fibrinogênio em Fibrina monomérica. O que transforma a Fibrina em uma rede estável e resistente?',opts:['O Fator X ativado','O Fator XIII ativado pela Trombina na presença de Ca²⁺','A Plasmina','O Cálcio diretamente'],ans:1,ok:'Fator XIIIa (ativado pela Trombina + Ca²⁺) cria ligações cruzadas covalentes entre monômeros de fibrina — transformando o gel frouxo em rede estável. Sem ele, o coágulo se dissolve precocemente.',err:'Fator XIII ativado pela própria Trombina (com Ca²⁺) cria as ligações cruzadas. Não é o cálcio diretamente — o cálcio é cofator para a ativação do FXIII.'},
+  {cat:'fibrinolise',tag:'Fibrinólise',tagClass:'p-bl',q:'O Dímero-D elevado num paciente pós-cirúrgico indica o quê exatamente?',opts:['Apenas que o paciente coagulou — formou fibrina','Que houve formação E degradação de fibrina polimerizada (coágulo + lise simultânea)','Que o paciente tem déficit de Fator XIII','Que as plaquetas estão consumidas'],ans:1,ok:'O Dímero-D é um produto específico da degradação da fibrina POLIMERIZADA pela Plasmina. Ou seja: houve coágulo E ele está sendo dissolvido. Por isso é usado para suspeitar de TVP, TEP e CIVD.',err:'D-dímero = produto da degradação da fibrina polimerizada. Sua elevação indica que houve formação de coágulo (fibrina) e que a Plasmina está atuando sobre ele. Não é elevado só pela coagulação — precisa haver lise também.'},
+  {cat:'coag',tag:'Hemofilia A',tagClass:'p-rd',q:'Paciente com hemofilia A: TP normal, TTPa prolongado. Por que a via extrínseca intacta não compensa o sangramento?',opts:['Porque o Fator VII também está reduzido na hemofilia A','Porque a via extrínseca apenas inicia a coagulação; a explosão de trombina depende do Complexo Tenase intrínseco (IXa/VIIIa) que está ausente','Porque o Fator X não é ativado pela via extrínseca','Porque hemofilia A cursa com trombocitopenia grave'],ans:1,ok:'Excelente. A via extrínseca só gera trombina suficiente para iniciar (modelo celular: fase de iniciação). A explosão de trombina que forma coágulo estável depende da propagação — IXa + VIIIa (Tenase intrínseco). Na hemofilia A, o FVIII está ausente: propagação falha.',err:'A via extrínseca é suficiente apenas para a iniciação — gera pouca trombina. A produção em massa de trombina (propagação) depende do complexo IXa/VIIIa sobre a plaqueta. Na hemofilia A (FVIII ausente), essa fase quebra — e a via extrínseca não supre.'},
+  {cat:'coag',tag:'Doença de von Willebrand',tagClass:'p-rd',q:'Por que pacientes com DvW grave (tipo 3) podem ter TTPa levemente prolongado, além do tempo de sangramento aumentado?',opts:['Porque o FvW inibe a via extrínseca indiretamente','Porque o FvW protege o Fator VIII no plasma; sem FvW, o FVIII é degradado mais rapidamente, reduzindo seu nível','Porque o FvW ativa o Fator XII','Porque o FvW é necessário para formar o Complexo Protrombinase'],ans:1,ok:'O FvW transporta e protege o FVIII no plasma. Na DvW tipo 3, o FvW está praticamente ausente → FVIII é degradado → TTPa se prolonga. Daí a superposição com hemofilia A leve nos exames.',err:'FvW protege o FVIII. Sem FvW, o FVIII circulante é degradado → queda do FVIII → TTPa prolongado. É por isso que a DvW grave pode mimetizar laboratorialmente uma hemofilia A leve.'},
+  {cat:'coag',tag:'Deficiência de vitamina K',tagClass:'p-rd',q:'Warfarina prolonga o TP antes de prolongar o TTPa. Por quê?',opts:['Porque a Warfarina inibe apenas a via intrínseca','Porque o Fator VII (via extrínseca) tem a menor meia-vida entre os fatores vitamina K-dependentes, caindo primeiro','Porque a Warfarina ativa o Fator XII excessivamente','Porque a Warfarina reduz as plaquetas'],ans:1,ok:'Fatores K-dependentes: II, VII, IX, X. O Fator VII tem meia-vida de ~6h — o menor de todos. Com a Warfarina inibindo a síntese, o VII cai primeiro → TP (que avalia VII + via comum) se prolonga antes do TTPa.',err:'O Fator VII tem meia-vida de ~6 horas, a menor entre os fatores K-dependentes (II, VII, IX, X). Como o TP avalia a via extrínseca (VII), ele reflete a queda de VII antes dos outros fatores. Por isso o TP é o primeiro a se prolongar com Warfarina.'},
+  {cat:'coag',tag:'CIVD',tagClass:'p-rd',q:'Na CIVD, o paciente sangra e forma trombos ao mesmo tempo. Qual o mecanismo central dessa aparente contradição?',opts:['Excesso de Vitamina K estimulando coagulação excessiva enquanto o fígado produz menos fatores','Ativação sistêmica descontrolada da coagulação → consumo de fatores e plaquetas (sangramento) + depósito de microtrombos na microcirculação (isquemia)','Hemólise maciça consumindo todos os fatores','Trombocitose causando agregação excessiva e consumo de fatores'],ans:1,ok:'CIVD = coagulopatia de consumo. A ativação generalizada consome fatores (II, V, VIII, X) e plaquetas em massa → sangramento. Mas os microtrombos formados obstruem capilares → isquemia e disfunção orgânica. Laboratorial: plaquetas baixas, TP e TTPa prolongados, fibrinogênio baixo, D-dímero muito alto.',err:'Na CIVD, a coagulação é ativada de forma sistêmica e incontrolada (sepse, trauma, neoplasia). Os fatores e plaquetas são consumidos → sangramento. Ao mesmo tempo, microtrombos formados nas artérias terminais causam isquemia. O laboratório mostra os dois: coagulação aumentada (D-dímero alto) e consumo (fatores e plaquetas baixos).'}
+];
+
+const SORT_EVENTS=[
+  {id:'e1',text:'Endotélio lesa, colágeno subendotelial exposto'},
+  {id:'e2',text:'Vasoespasmo: Endotelina + mecanismo miogênico'},
+  {id:'e3',text:'FvW liga colágeno → GpIb plaquetária (adesão)'},
+  {id:'e4',text:'Grânulos densos liberam ADP + serotonina; TXA2 sintetizado'},
+  {id:'e5',text:'GpIIb/IIIa + fibrinogênio → agregação plaquetária'},
+  {id:'e6',text:'Fosfatidilserina exposta → plataforma para coagulação'},
+  {id:'e7',text:'Via intrínseca: XII→XI→IX + VIII (Tenase) → X'},
+  {id:'e8',text:'Via extrínseca: FT + VII → X (e IX)'},
+  {id:'e9',text:'Xa + Va + Ca²⁺ + FP3 → Protrombinase → Trombina'},
+  {id:'e10',text:'Trombina cliva fibrinogênio → fibrina; FXIIIa estabiliza'},
+  {id:'e11',text:'PDGF + VEGF: reparo e retração do coágulo'},
+  {id:'e12',text:'tPA + Plasminogênio → Plasmina → degrada fibrina → D-dímero'}
+];
+
+const MATCH_LEFT=[
+  'Hemofilia A','Hemofilia B','Doença de von Willebrand','Deficiência de vitamina K','CIVD','Hepatopatia grave','Hemofilia A e B (ambas)'
+];
+const MATCH_RIGHT=[
+  'Deficiência de Fator VIII','Deficiência de Fator IX','Déficit de FvW → adesão plaquetária falha','Inibe síntese de II, VII, IX, X','Consumo de todos os fatores + plaquetas','Reduz síntese de quase todos os fatores','TTPa prolongado, TP normal'
+];
+const MATCH_PAIRS={0:0,1:1,2:2,3:3,4:4,5:5,6:6};
+
+const DETECTIVE_CASES=[
+  {name:'João, 8 anos',sex:'M',hx:'Hemartrose de joelho espontânea. Irmão tem o mesmo problema. Sem história de trauma.',labs:[{l:'TP',s:'norm'},{l:'TTPa',s:'up'},{l:'Plaquetas',s:'norm'},{l:'FVIII',s:'down'}],opts:['Hemofilia A','Hemofilia B','DvW tipo 3','Deficiência de vitamina K'],ans:0,exp:'TP normal + TTPa prolongado + FVIII reduzido + herança ligada ao X + hemartrose espontânea = Hemofilia A. A hemofilia B (FIX) teria o mesmo padrão de TP/TTPa — a diferença é no fator dosado.'},
+  {name:'Maria, 35 anos',sex:'F',hx:'Sangramento gengival recorrente, menorragia desde a adolescência. Tempo de sangramento muito aumentado. Sem histórico familiar claro.',labs:[{l:'TP',s:'norm'},{l:'TTPa',s:'norm'},{l:'Plaquetas',s:'norm'},{l:'FvW',s:'down'},{l:'Cofator ristocetina',s:'down'}],opts:['Hemofilia A','Doença de von Willebrand tipo 1','CIVD','Trombocitopenia imune'],ans:1,exp:'TP e TTPa normais + plaquetas normais + FvW baixo + tempo de sangramento aumentado = DvW tipo 1 (deficiência quantitativa parcial do FvW). É a coagulopatia hereditária mais frequente — e frequentemente subdiagnosticada em mulheres com menorragia.'},
+  {name:'Carlos, 58 anos',sex:'M',hx:'Cirrose por hepatite C. Internado por sangramento digestivo. Esplenomegalia ao exame.',labs:[{l:'TP',s:'up'},{l:'TTPa',s:'up'},{l:'Plaquetas',s:'down'},{l:'Fibrinogênio',s:'down'},{l:'D-dímero',s:'norm'}],opts:['CIVD','Hemofilia adquirida','Hepatopatia grave','Deficiência de vitamina K isolada'],ans:2,exp:'Cirrose → fígado não sintetiza fatores de coagulação → TP e TTPa prolongados. Esplenomegalia → hiperesplenismo → trombocitopenia. Fibrinogênio baixo pela falência sintética (não por consumo). D-dímero normal afasta CIVD ativa. Quadro típico de hepatopatia grave.'},
+  {name:'Ana, 70 anos',sex:'F',hx:'Pós-operatório de cirurgia abdominal de grande porte. Febre, hipotensão, petéquias generalizadas, oligúria.',labs:[{l:'TP',s:'up'},{l:'TTPa',s:'up'},{l:'Plaquetas',s:'down'},{l:'Fibrinogênio',s:'down'},{l:'D-dímero',s:'up'}],opts:['Trombocitopenia imune','Hemofilia adquirida','CIVD','Hepatopatia grave'],ans:2,exp:'Sepse pós-operatória + TP prolongado + TTPa prolongado + plaquetas baixas + fibrinogênio baixo + D-dímero muito elevado = CIVD. O D-dímero elevado é o diferencial chave em relação à hepatopatia (onde D-dímero pode ser normal). Petéquias + sangramento + microtrombos (oligúria) = paradoxo da CIVD.'},
+  {name:'Pedro, 45 anos',sex:'M',hx:'Uso de Warfarina para fibrilação atrial. Exame de rotina. Sem sangramento ativo.',labs:[{l:'TP / INR',s:'up'},{l:'TTPa',s:'norm'},{l:'Plaquetas',s:'norm'},{l:'FVII',s:'down'}],opts:['CIVD inicial','Deficiência de vitamina K / Warfarina','Hemofilia B leve','Doença de von Willebrand tipo 2'],ans:1,exp:'TP prolongado isolado + TTPa normal + uso de Warfarina = Deficiência de fatores vitamina K-dependentes (II, VII, IX, X). O Fator VII tem a menor meia-vida — cai primeiro, prolongando o TP antes do TTPa. Sem sangramento ativo, provavelmente dentro da janela terapêutica ou supraterapêutico.'}
+];
+
+let mcqIdx=0,mcqScore=0,mcqLives=3,mcqStreak=0,mcqAnswered=false;
+let sortTries=0;
+let matchSel={left:-1,right:-1},matchScore=0,matchDone=[];
+let detIdx=0,detScore=0;
+
+function goHome(){
+  mcqIdx=0;mcqScore=0;mcqLives=3;mcqStreak=0;mcqAnswered=false;
+  sortTries=0;matchSel={left:-1,right:-1};matchScore=0;matchDone=[];
+  detIdx=0;detScore=0;
+  showScreen('home');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById('screen-'+id).classList.add('on');
+}
+
+function startMode(m){
+  showScreen(m);
+  if(m==='mcq')renderMCQ();
+  if(m==='sort')renderSort();
+  if(m==='match')renderMatch();
+  if(m==='detective'){document.getElementById('det-total').textContent=DETECTIVE_CASES.length;renderDetective();}
+}
+
+function renderMCQ(){
+  if(mcqIdx>=QS.length){showResult('mcq');return;}
+  const q=QS[mcqIdx];
+  document.getElementById('mcq-qnum').textContent='Questão '+(mcqIdx+1)+' de '+QS.length;
+  document.getElementById('mcq-score').textContent=mcqScore;
+  document.getElementById('mcq-prog').style.width=Math.round((mcqIdx/QS.length)*100)+'%';
+  document.getElementById('mcq-lives').innerHTML='&#9679;'.repeat(mcqLives)+'&#9675;'.repeat(3-mcqLives);
+  document.getElementById('mcq-streak').innerHTML=mcqStreak>=2?'<span class="streak-badge">Sequência: '+mcqStreak+'</span>':'';
+  document.getElementById('mcq-panel').innerHTML=`
+    <div class="q-meta"><span class="q-tag ${q.tagClass}" style="padding:2px 8px;border-radius:6px;font-size:11px;font-weight:500">${q.tag}</span></div>
+    <div class="q-text">${q.q}</div>
+    <div class="opts" id="mcq-opts">
+      ${q.opts.map((o,i)=>`<button class="opt" id="mcqo${i}" onclick="pickMCQ(${i})">${String.fromCharCode(65+i)}) ${o}</button>`).join('')}
+    </div>
+    <div id="mcq-fb" style="display:none"></div>
+    <div id="mcq-nav" class="btn-row" style="display:none">
+      ${mcqIdx<QS.length-1?'<button class="btn-main btn-primary" onclick="nextMCQ()">Próxima →</button>':'<button class="btn-main btn-primary" onclick="nextMCQ()">Ver resultado →</button>'}
+      <button class="btn-main" onclick="goHome()">Menu</button>
+    </div>`;
+  mcqAnswered=false;
+}
+
+function pickMCQ(i){
+  if(mcqAnswered)return;
+  mcqAnswered=true;
+  const q=QS[mcqIdx];
+  const ok=i===q.ans;
+  if(ok){mcqScore++;mcqStreak++;}else{mcqLives=Math.max(0,mcqLives-1);mcqStreak=0;}
+  document.querySelectorAll('.opt').forEach(o=>o.disabled=true);
+  document.getElementById('mcqo'+i).classList.add(ok?'ok':'err');
+  if(!ok)document.getElementById('mcqo'+q.ans).classList.add('reveal');
+  const fb=document.getElementById('mcq-fb');
+  fb.style.display='block';
+  fb.className='fb '+(ok?'fb-ok':'fb-err');
+  fb.innerHTML='<div class="fb-title">'+(ok?'Correto!':'Incorreto')+'</div>'+(ok?q.ok:q.err);
+  document.getElementById('mcq-nav').style.display='flex';
+  if(mcqLives===0){setTimeout(()=>{showResult('mcq');},1800);}
+}
+
+function nextMCQ(){mcqIdx++;renderMCQ();}
+
+function renderSort(){
+  const shuffled=[...SORT_EVENTS].sort(()=>Math.random()-.5);
+  document.getElementById('sort-panel').innerHTML=`
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;line-height:1.5">Organize a cascata em ordem. Arraste do painel esquerdo para montar a sequência vertical à direita.</div>
+    <div class="sort-layout">
+      <div class="sort-col">
+        <div class="sort-zone-title">Eventos embaralhados</div>
+        <div class="sort-drop-zone vertical" id="sort-pool" ondragover="sortDragOver(event)" ondragleave="sortDragLeave(event)" ondrop="sortDrop(event)">
+          ${shuffled.map((e,i)=>`<div class="sort-item" draggable="true" data-id="${e.id}" ondragstart="sortDragStart(event,this)" ondragend="sortDragEnd(event)">${e.text}</div>`).join('')}
+        </div>
+      </div>
+      <div class="sort-col">
+        <div class="sort-zone-title">Sequência correta</div>
+        <div class="sort-drop-zone vertical sort-ordered" id="sort-ordered" ondragover="sortDragOver(event)" ondragleave="sortDragLeave(event)" ondrop="sortDrop(event)"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-main btn-primary" onclick="checkSort()">Verificar ordem</button>
+      <button class="btn-main" onclick="goHome()">Menu</button>
+    </div>
+    <div id="sort-fb" style="margin-top:12px"></div>`;
+}
+
+let dragEl=null;
+function sortDragStart(e,el){dragEl=el;el.classList.add('dragging');}
+function sortDragEnd(e){if(dragEl)dragEl.classList.remove('dragging');dragEl=null;}
+function sortDragOver(e){e.preventDefault();e.currentTarget.classList.add('over');
+  const after=getSortAfter(e.currentTarget,e.clientY);
+  if(after===null)e.currentTarget.appendChild(dragEl);
+  else e.currentTarget.insertBefore(dragEl,after);}
+function sortDragLeave(e){e.currentTarget.classList.remove('over');}
+function sortDrop(e){e.preventDefault();e.currentTarget.classList.remove('over');}
+function getSortAfter(container,y){
+  const draggables=[...container.querySelectorAll('.sort-item:not(.dragging)')];
+  return draggables.reduce((closest,child)=>{
+    const box=child.getBoundingClientRect();
+    const offset=y-box.top-box.height/2;
+    if(offset<0&&offset>closest.offset)return{offset,element:child};
+    return closest;
+  },{offset:Number.NEGATIVE_INFINITY}).element||null;
+}
+function checkSort(){
+  sortTries++;
+  document.getElementById('sort-tries').textContent='Tentativa '+sortTries;
+  const zone=document.getElementById('sort-ordered');
+  const items=[...zone.querySelectorAll('.sort-item')];
+  const ids=items.map(i=>i.dataset.id);
+  const correct=SORT_EVENTS.map(e=>e.id);
+  let wrongs=[];
+  ids.forEach((id,i)=>{if(id!==correct[i])wrongs.push(i+1);});
+  const fb=document.getElementById('sort-fb');
+  const missing=correct.length-ids.length;
+  if(wrongs.length===0&&missing===0){
+    fb.innerHTML='<div class="fb fb-ok"><div class="fb-title">Perfeito!</div>Você ordenou corretamente todos os 12 eventos da hemostasia. <div class="btn-row" style="margin-top:8px"><button class="btn-main btn-primary" onclick="goHome()">Menu principal</button></div></div>';
+    items.forEach(i=>i.style.background='var(--color-background-success,#E1F5EE)');
+  } else {
+    const missingText=missing>0?(' Faltam '+missing+' evento(s) para completar a sequência.') : '';
+    const wrongsText=wrongs.length>0?('As posições '+wrongs.join(', ')+' estão incorretas.') : '';
+    const title=wrongs.length>0?wrongs.length+' evento(s) fora de lugar':'Sequência incompleta';
+    fb.innerHTML='<div class="fb fb-err"><div class="fb-title">'+title+'</div>'+wrongsText+missingText+' Tente novamente — sem revelar a resposta para você pensar!</div>';
+  }
+}
+
+function renderMatch(){
+  matchDone=[];matchScore=0;matchSel={left:-1,right:-1};
+  document.getElementById('match-score-disp').textContent='0 / '+MATCH_LEFT.length;
+  const rightShuffled=[...MATCH_RIGHT].map((r,i)=>({r,i})).sort(()=>Math.random()-.5);
+  document.getElementById('match-panel').innerHTML=`
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px">Clique em uma coagulopatia (esquerda) e depois no conceito correspondente (direita). Quando errar, ambos ficam vermelhos brevemente.</div>
+    <div class="match-grid">
+      <div>
+        <div class="match-col-title">Coagulopatia</div>
+        ${MATCH_LEFT.map((l,i)=>`<div class="match-item" id="ml${i}" onclick="matchPickLeft(${i})">${l}</div>`).join('')}
+      </div>
+      <div>
+        <div class="match-col-title">Déficit / característica</div>
+        ${rightShuffled.map(({r,i})=>`<div class="match-item" id="mr${i}" onclick="matchPickRight(${i})" data-ridx="${i}">${r}</div>`).join('')}
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn-main" onclick="goHome()">Menu</button>
+    </div>
+    <div id="match-fb" style="margin-top:10px"></div>`;
+}
+
+function matchPickLeft(i){
+  if(matchDone.includes('l'+i))return;
+  document.querySelectorAll('.match-item[id^="ml"]').forEach(el=>el.classList.remove('selected'));
+  matchSel.left=i;
+  document.getElementById('ml'+i).classList.add('selected');
+  if(matchSel.right!==-1)attemptMatch();
+}
+function matchPickRight(i){
+  if(matchDone.includes('r'+i))return;
+  document.querySelectorAll('.match-item[id^="mr"]').forEach(el=>el.classList.remove('selected'));
+  matchSel.right=i;
+  document.getElementById('mr'+i).classList.add('selected');
+  if(matchSel.left!==-1)attemptMatch();
+}
+function attemptMatch(){
+  const{left,right}=matchSel;
+  const ok=MATCH_PAIRS[left]===right;
+  const lEl=document.getElementById('ml'+left);
+  const rEl=document.getElementById('mr'+right);
+  if(ok){
+    lEl.className='match-item matched-ok';rEl.className='match-item matched-ok';
+    matchDone.push('l'+left,'r'+right);
+    matchScore++;
+    document.getElementById('match-score-disp').textContent=matchScore+' / '+MATCH_LEFT.length;
+    if(matchScore===MATCH_LEFT.length){
+      document.getElementById('match-fb').innerHTML='<div class="fb fb-ok"><div class="fb-title">Perfeito! Todas as associações corretas.</div><div class="btn-row" style="margin-top:8px"><button class="btn-main btn-primary" onclick="goHome()">Menu</button></div></div>';
+    }
+  } else {
+    lEl.className='match-item matched-err';rEl.className='match-item matched-err';
+    setTimeout(()=>{
+      lEl.className='match-item';rEl.className='match-item';
+    },900);
+  }
+  matchSel={left:-1,right:-1};
+}
+
+function renderDetective(){
+  if(detIdx>=DETECTIVE_CASES.length){showResult('detective');return;}
+  const c=DETECTIVE_CASES[detIdx];
+  document.getElementById('det-num').textContent=detIdx+1;
+  document.getElementById('detective-panel').innerHTML=`
+    <div class="coag-patient">
+      <div class="coag-header">
+        <div>
+          <div class="coag-name">${c.name}</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px;line-height:1.45">${c.hx}</div>
+        </div>
+      </div>
+      <div class="coag-labs">
+        ${c.labs.map(l=>`<span class="lab-box ${l.s==='up'?'lab-up':l.s==='down'?'lab-down':'lab-norm'}">${l.l}: ${l.s==='up'?'Aumentado':l.s==='down'?'Reduzido':'Normal'}</span>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Qual é o diagnóstico mais provável?</div>
+    <div class="opts" id="det-opts">
+      ${c.opts.map((o,i)=>`<button class="opt" id="deto${i}" onclick="pickDetective(${i})">${o}</button>`).join('')}
+    </div>
+    <div id="det-fb" style="display:none"></div>
+    <div id="det-nav" class="btn-row" style="display:none">
+      ${detIdx<DETECTIVE_CASES.length-1?'<button class="btn-main btn-primary" onclick="nextDetective()">Próximo caso →</button>':'<button class="btn-main btn-primary" onclick="nextDetective()">Ver resultado →</button>'}
+      <button class="btn-main" onclick="goHome()">Menu</button>
+    </div>`;
+}
+
+function pickDetective(i){
+  const c=DETECTIVE_CASES[detIdx];
+  const ok=i===c.ans;
+  if(ok)detScore++;
+  document.querySelectorAll('#det-opts .opt').forEach(o=>o.disabled=true);
+  document.getElementById('deto'+i).classList.add(ok?'ok':'err');
+  if(!ok)document.getElementById('deto'+c.ans).classList.add('reveal');
+  const fb=document.getElementById('det-fb');
+  fb.style.display='block';
+  fb.className='fb '+(ok?'fb-ok':'fb-err');
+  fb.innerHTML='<div class="fb-title">'+(ok?'Diagnóstico correto!':'Diagnóstico incorreto')+'</div>'+c.exp;
+  document.getElementById('det-nav').style.display='flex';
+}
+function nextDetective(){detIdx++;renderDetective();}
+
+function showResult(mode){
+  showScreen('result');
+  let score=0,total=0,msg='',medal='';
+  if(mode==='mcq'){score=mcqScore;total=QS.length;}
+  if(mode==='detective'){score=detScore;total=DETECTIVE_CASES.length;}
+  const pct=Math.round((score/total)*100);
+  if(pct>=90){medal='';msg='Excelente domínio! Você demonstra compreensão sólida de toda a cascata — do vasoespasmo à fibrinólise — e consegue aplicar na clínica das coagulopatias.';}
+  else if(pct>=70){medal='';msg='Bom desempenho. Revise os pontos que errou com atenção especial aos complexos Tenase/Protrombinase e às diferenças laboratoriais entre as coagulopatias.';}
+  else if(pct>=50){medal='';msg='Desempenho mediano. Foco nos mecanismos de cada etapa e no raciocínio clínico das coagulopatias — TP vs TTPa, e qual fator está ausente em cada doença.';}
+  else{medal='';msg='A cascata ainda precisa de atenção. Comece pela sequência de eventos, depois vá para os complexos e por fim para a clínica das coagulopatias.';}
+  document.getElementById('result-medal').textContent=medal;
+  document.getElementById('result-num').textContent=score+'/'+total;
+  document.getElementById('result-sub').textContent=pct+'% de acertos';
+  document.getElementById('result-msg').textContent=msg;
+}
+</script>
